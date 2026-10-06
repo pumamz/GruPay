@@ -1,0 +1,39 @@
+{
+  "nombre": "Prueba 2026",
+  "participantes": [
+    {
+      "nombre": "Persona A",
+      "rol": "Organizador"
+    },
+    {
+      "nombre": "Persona B",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Persona C",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Persona D",
+      "rol": "Miembro"
+    }
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "Almuerzo de Bienvenida",
+      "importe": 100.0,
+      "fecha": "2026-10-06",
+      "pagador": "Persona A",
+      "divididos": [
+        "Persona A",
+        "Persona B",
+        "Persona C",
+        "Persona D"
+      ],
+      "cuota_individual": 25.0
+    }
+  ],
+  "contador_gasto_id": 2,
+  "version": "2.0.0"
+}

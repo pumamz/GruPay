@@ -34,11 +34,22 @@ El proyecto utiliza **100% biblioteca estándar de Python (`tkinter`, `json`, `d
 # Desde la raíz del repositorio:
 python3 v1/src/app.py
 ```
-*O en Thonny: Abrir `v1/src/app.py` y pulsar el botón verde de Ejecutar (F5).*
+*O en Thonny: Abrir `v1/src/app.py` y pulsar F5.*
 
-### Ejecución de Pruebas Unitarias Automatizadas (V1):
+### Ejecución de la Versión 2 (V2):
 ```bash
+# Desde la raíz del repositorio:
+python3 v2/src/app.py
+```
+*O en Thonny: Abrir `v2/src/app.py` y pulsar F5.*
+
+### Ejecución de Pruebas Unitarias Automatizadas:
+```bash
+# Pruebas V1:
 PYTHONPATH=v1/src python3 -m unittest v1/pruebas/test_v1.py
+
+# Pruebas V2 (Criterios de Aceptación Fase 4):
+PYTHONPATH=v2/src python3 -m unittest v2/pruebas/test_v2.py
 ```
 
 ---
@@ -48,26 +59,22 @@ PYTHONPATH=v1/src python3 -m unittest v1/pruebas/test_v1.py
 ```text
 GruPay/
 ├── ENTREGABLE_SESION_1.md    # Especificación de requisitos y prototipo
-├── index.html                # Prototipo web exportado de Stitch
-├── pantalla1_participantes.* # Vistas de diseño de Stitch
-├── pantalla2_gastos.*
-├── pantalla3_saldos.*
+├── README.md                 # Guía general del proyecto
 │
-├── v1/                       # Versión 1 (100% Funcional y Validada)
-│   ├── src/
-│   │   ├── core.py           # Lógica desacoplada y algoritmos de saldos
-│   │   └── app.py            # GUI Tkinter desktop para Thonny
-│   ├── pruebas/
-│   │   └── test_v1.py        # 10 tests automatizados (100% pasando)
+├── v1/                       # Versión 1 (RF1-RF10 Base - 100% Validada)
+│   ├── src/ (core.py, app.py)
+│   ├── pruebas/ (test_v1.py - 10/10 tests OK)
 │   ├── datos/
-│   │   ├── ejemplo_viaje.json
-│   │   └── ejemplo_roommates.json
-│   ├── prompts/
-│   │   └── prompts_v1.md     # Registro de prompts de generación
-│   └── metricas/
-│       └── metricas_v1.md    # Métricas de calidad, LOC y tiempos
+│   ├── prompts/ (prompts_v1.md)
+│   └── metricas/ (metricas_v1.md)
 │
-├── v2/                       # En desarrollo iterativo
+├── v2/                       # Versión 2 (Estabilización, Multi-Grupo, Auditoría, Regex)
+│   ├── src/ (core.py, app.py)
+│   ├── pruebas/ (test_v2.py - 9/9 tests OK)
+│   ├── datos/grupos_guardados/
+│   ├── prompts/ (prompts_v2.md)
+│   └── metricas/ (metricas_v2.md)
+│
 └── v3/                       # En desarrollo iterativo
 ```
 
@@ -75,3 +82,5 @@ GruPay/
 
 ## 🏷️ Versiones y Tags en Git
 * **`v1.0.0`**: Versión 1 completa con los 10 requerimientos funcionales validados con 10/10 pruebas unitarias y aplicación de escritorio operativa en Thonny.
+* **`v2.0.0`**: Versión 2 estabilizada con corrección de errores críticos, multi-grupo, saneamiento de archivos y auditoría de pagos (9/9 pruebas de criterios de aceptación aprobadas).
+
