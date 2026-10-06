@@ -1,0 +1,38 @@
+{
+  "nombre": "Apartamento 402 - Gastos del Mes",
+  "participantes": [
+    "Ana",
+    "Bruno",
+    "Clara"
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "Internet y Fibra",
+      "importe": 60.0,
+      "fecha": "2026-10-01",
+      "pagador": "Ana",
+      "divididos": [
+        "Ana",
+        "Bruno",
+        "Clara"
+      ],
+      "cuota_individual": 20.0
+    },
+    {
+      "id": 2,
+      "concepto": "Artículos de Limpieza",
+      "importe": 30.0,
+      "fecha": "2026-10-03",
+      "pagador": "Bruno",
+      "divididos": [
+        "Ana",
+        "Bruno",
+        "Clara"
+      ],
+      "cuota_individual": 10.0
+    }
+  ],
+  "contador_gasto_id": 3,
+  "version": "1.0.0"
+}

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GruPay - Gestor de Gastos Compartidos</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#960014",
+            "on-secondary-fixed-variant": "#005236",
+            "inverse-on-surface": "#eaf1ff",
+            "primary": "#3525cd",
+            "on-tertiary-fixed": "#410004",
+            "tertiary-container": "#bc1d25",
+            "outline-variant": "#c7c4d8",
+            "surface": "#f8f9ff",
+            "secondary": "#006c49",
+            "surface-tint": "#4d44e3",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-fixed-variant": "#930013",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#ffdad7",
+            "surface-container-highest": "#d3e4fe",
+            "secondary-fixed": "#6ffbbe",
+            "error": "#ba1a1a",
+            "primary-fixed": "#e2dfff",
+            "on-error": "#ffffff",
+            "outline": "#777587",
+            "surface-container": "#e5eeff",
+            "primary-container": "#4f46e5",
+            "background": "#f8f9ff",
+            "surface-dim": "#cbdbf5",
+            "surface-bright": "#f8f9ff",
+            "inverse-surface": "#213145",
+            "on-surface-variant": "#464555",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#ffd0cc",
+            "on-primary-fixed-variant": "#3323cc",
+            "on-surface": "#0b1c30",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-secondary-container": "#00714d",
+            "secondary-fixed-dim": "#4edea3",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "secondary-container": "#6cf8bb",
+            "surface-container-low": "#eff4ff",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "on-secondary-fixed": "#002113",
+            "on-background": "#0b1c30",
+            "on-primary-fixed": "#0f0069",
+            "on-primary-container": "#dad7ff",
+            "inverse-primary": "#c3c0ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1rem",
+            "space-xl": "1.5rem",
+            "margin": "1rem",
+            "space-md": "0.75rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "currency-display": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "currency-table": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "title-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+            "body-lg": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "currency-display": ["28px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "currency-table": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /* Custom scrollbar for desktop app polish */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c7c4d8;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #777587;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface h-full flex flex-col antialiased select-none overflow-hidden font-body-md text-body-md">
+<!-- Desktop App Window Chrome & Top Navigation -->
+<header class="bg-surface border-b border-outline-variant shrink-0 z-30">
+<!-- Top macOS / Native Window Chrome Strip -->
+<div class="flex items-center justify-between px-4 h-10 bg-surface-container-low border-b border-outline-variant">
+<!-- Traffic Light Controls & Title -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-[#EF4444] inline-block border border-black/10 cursor-pointer hover:opacity-80"></span>
+<span class="w-3 h-3 rounded-full bg-[#F59E0B] inline-block border border-black/10 cursor-pointer hover:opacity-80"></span>
+<span class="w-3 h-3 rounded-full bg-[#10B981] inline-block border border-black/10 cursor-pointer hover:opacity-80"></span>
+</div>
+<div class="flex items-center gap-2 border-l border-outline-variant pl-3">
+<div class="w-5 h-5 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-size: 13px;">account_balance_wallet</span>
+</div>
+<span class="font-headline-md text-label-md font-semibold text-on-surface tracking-tight">GruPay</span>
+<span class="text-on-surface-variant font-label-sm">/ Gestor de Gastos Compartidos</span>
+</div>
+</div>
+<!-- Quick desktop actions & Autosave Indicator -->
+<div class="flex items-center gap-3">
+<!-- Status Pill -->
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-container/30 border border-secondary text-secondary">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold">● Cambios guardados</span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1 text-on-surface hover:bg-surface-container rounded-lg font-label-md text-label-md transition-colors duration-150 flex items-center gap-1.5 active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 16px;">folder_open</span>
+<span>📂 Cargar Grupo</span>
+</button>
+<button class="px-2.5 py-1 text-on-surface hover:bg-surface-container rounded-lg font-label-md text-label-md transition-colors duration-150 flex items-center gap-1.5 active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 16px;">save</span>
+<span>💾 Guardar Grupo</span>
+</button>
+<button class="px-3 py-1 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-label-md text-label-md font-medium transition-colors duration-150 flex items-center gap-1.5 shadow-sm active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 16px;">add</span>
+<span>+ Nuevo Grupo</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Group Context Bar & Breadcrumbs -->
+<div class="flex justify-between items-center w-full px-4 h-12 bg-surface select-none">
+<div class="flex items-center gap-6">
+<!-- Active Group Selector Pill/Dropdown -->
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container transition-colors">
+<span class="text-base">🏖️</span>
+<span class="font-title-sm text-title-sm text-on-surface">Viaje a la Playa 🏖️</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm font-medium">4 participantes</span>
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 16px;">expand_more</span>
+</div>
+<!-- Horizontal Nav Tabs from Shared Components Anchor -->
+<nav class="hidden md:flex items-center gap-5 text-label-md">
+<button class="text-primary font-semibold border-b-2 border-primary pb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined" style="font-size: 16px;">dashboard</span>
+<span>Viaje a la Playa 🏖️</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface pb-1 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">groups</span>
+<span>Participantes (4)</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface pb-1 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">receipt_long</span>
+<span>Historial</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface pb-1 flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">account_balance</span>
+<span>Liquidación</span>
+</button>
+</nav>
+</div>
+<!-- Trailing Quick Actions & Profile -->
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors active:scale-[0.98]" title="Abrir archivo">
+<span class="material-symbols-outlined">file_open</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors active:scale-[0.98]" title="Invitar miembro">
+<span class="material-symbols-outlined">group_add</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors active:scale-[0.98]" title="Configuración">
+<span class="material-symbols-outlined">tune</span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-2 pl-1 cursor-pointer">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold ring-2 ring-surface-variant">
+            CG
+          </div>
+<span class="font-label-md text-label-md font-semibold text-on-surface hidden lg:inline">Carlos G.</span>
+</div>
+</div>
+</div>
+</header>
+<!-- 3-Column Desktop Workspace Canvas -->
+<main class="flex-1 flex overflow-hidden bg-surface">
+<!-- COLUMN 1: LEFT SIDEBAR (Gestión de Participantes) -->
+<aside class="w-[280px] shrink-0 bg-surface-container-low border-r border-outline-variant flex flex-col justify-between overflow-hidden">
+<!-- Top Section -->
+<div class="p-3.5 flex flex-col h-full overflow-hidden">
+<!-- Section Header -->
+<div class="flex items-center justify-between pb-3 mb-2 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">groups</span>
+<h2 class="font-title-sm text-title-sm text-on-surface font-semibold">Participantes (4)</h2>
+</div>
+<button class="p-1 text-primary hover:bg-surface-container rounded-lg transition-colors flex items-center gap-1 font-label-sm text-label-sm" title="Añadir Participante">
+<span class="material-symbols-outlined" style="font-size: 16px;">person_add</span>
+<span class="font-semibold">+ Añadir</span>
+</button>
+</div>
+<!-- Participants List -->
+<div class="space-y-2 overflow-y-auto flex-1 pr-1">
+<!-- Member 1: Carlos Gómez (Organizador) -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between group hover:border-primary/40 transition-all duration-150">
+<div class="flex items-center gap-2.5">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold text-label-md">
+                  CG
+                </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-secondary border-2 border-surface-container-lowest"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Carlos Gómez</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="px-1.5 py-0.2 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-[10px] font-semibold">Organizador</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">• Pagó $180.00</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">edit</span>
+</button>
+</div>
+</div>
+<!-- Member 2: Sofía Martínez -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between group hover:border-primary/40 transition-all duration-150">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-label-md font-bold text-label-md">
+                SM
+              </div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Sofía Martínez</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $80.00</span>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container/30 rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Member 3: Mateo Silva -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between group hover:border-primary/40 transition-all duration-150">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-md font-bold text-label-md">
+                MS
+              </div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Mateo Silva</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $0.00</span>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container/30 rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Member 4: Valentina Rios -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between group hover:border-primary/40 transition-all duration-150">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-label-md font-bold text-label-md">
+                VR
+              </div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Valentina Rios</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $60.00</span>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">edit</span>
+</button>
+<button class="p-1 text-error hover:bg-error-container/30 rounded">
+<span class="material-symbols-outlined" style="font-size: 15px;">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Summary Card -->
+<div class="mt-3 pt-3 border-t border-outline-variant bg-surface-container-lowest p-3 rounded-xl border border-outline-variant">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Gasto Total del Grupo</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-label-sm text-[10px] font-bold">4 Gastos</span>
+</div>
+<div class="font-currency-display text-currency-display text-on-surface mb-2">
+            $320.00 <span class="text-label-md font-normal text-on-surface-variant">ARS</span>
+</div>
+<!-- Visual Distribution Bar -->
+<div class="space-y-1">
+<div class="w-full h-2 rounded-full overflow-hidden flex bg-surface-container">
+<div class="bg-primary" style="width: 56.25%" title="Carlos Gómez: $180.00 (56%)"></div>
+<div class="bg-[#006c49]" style="width: 25%" title="Sofía Martínez: $80.00 (25%)"></div>
+<div class="bg-[#f59e0b]" style="width: 18.75%" title="Valentina Rios: $60.00 (19%)"></div>
+</div>
+<div class="flex justify-between items-center font-label-sm text-[10px] text-on-surface-variant pt-1">
+<span>Promedio / pers: <strong class="text-on-surface font-semibold">$80.00</strong></span>
+<span class="flex items-center gap-1 text-secondary font-medium">
+<span class="material-symbols-outlined" style="font-size: 12px;">check_circle</span> Balanceado
+              </span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- COLUMN 2: CENTER MAIN (Registro y Lista de Gastos) -->
+<section class="flex-1 flex flex-col min-w-[420px] bg-surface-container-lowest overflow-hidden">
+<!-- Center Column Scrollable Container -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<!-- CARD: + Registrar Nuevo Gasto -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3 pb-2 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 15px;">receipt</span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface font-semibold">+ Registrar Nuevo Gasto</h3>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 14px;">bolt</span>
+<span>División Automática</span>
+</div>
+</div>
+<form class="space-y-3" onsubmit="event.preventDefault();">
+<!-- Row 1: Concepto, Importe, Fecha -->
+<div class="grid grid-cols-12 gap-2.5">
+<!-- Concepto -->
+<div class="col-span-6">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 font-medium">Concepto</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-outline" style="font-size: 16px;">shopping_bag</span>
+<input class="w-full h-[34px] pl-8 pr-3 text-body-md font-body-md bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-container" type="text" value="Cena Restaurante Mar Azul"/>
+</div>
+</div>
+<!-- Importe -->
+<div class="col-span-3">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 font-medium">Importe ($)</label>
+<div class="relative">
+<span class="absolute left-2.5 top-2 text-outline font-label-md font-semibold">$</span>
+<input class="w-full h-[34px] pl-6 pr-2 text-body-md font-body-md font-currency-table bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-container" type="text" value="120.00"/>
+</div>
+</div>
+<!-- Fecha -->
+<div class="col-span-3">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 font-medium">Fecha</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-outline" style="font-size: 16px;">calendar_today</span>
+<input class="w-full h-[34px] pl-8 pr-2 text-body-md font-body-md bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-container" type="text" value="06/10/2026"/>
+</div>
+</div>
+</div>
+<!-- Row 2: Pagado por & Participants split -->
+<div class="grid grid-cols-12 gap-3 pt-1">
+<!-- Pagado por Dropdown -->
+<div class="col-span-5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 font-medium">Pagado por:</label>
+<div class="relative">
+<select class="w-full h-[34px] pl-2.5 pr-8 text-body-md font-body-md bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-container cursor-pointer appearance-none">
+<option selected="">Carlos Gómez</option>
+<option>Sofía Martínez</option>
+<option>Mateo Silva</option>
+<option>Valentina Rios</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2 text-outline pointer-events-none" style="font-size: 16px;">unfold_more</span>
+</div>
+</div>
+<!-- Dividir en partes iguales entre -->
+<div class="col-span-7">
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-medium">Dividir en partes iguales entre:</label>
+<span class="font-label-sm text-[11px] text-secondary font-semibold bg-secondary-container/40 px-1.5 py-0.2 rounded">Cuota estimada: $30.00 c/u</span>
+</div>
+<!-- Interactive Checkboxes List -->
+<div class="grid grid-cols-2 gap-1.5 bg-surface-container-lowest p-1.5 rounded-lg border border-outline-variant">
+<label class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-surface-container cursor-pointer text-label-md">
+<input checked="" class="rounded text-primary focus:ring-primary-container w-3.5 h-3.5 border-outline-variant" type="checkbox"/>
+<span class="text-on-surface">Carlos</span>
+</label>
+<label class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-surface-container cursor-pointer text-label-md">
+<input checked="" class="rounded text-primary focus:ring-primary-container w-3.5 h-3.5 border-outline-variant" type="checkbox"/>
+<span class="text-on-surface">Sofía</span>
+</label>
+<label class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-surface-container cursor-pointer text-label-md">
+<input checked="" class="rounded text-primary focus:ring-primary-container w-3.5 h-3.5 border-outline-variant" type="checkbox"/>
+<span class="text-on-surface">Mateo</span>
+</label>
+<label class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-surface-container cursor-pointer text-label-md">
+<input checked="" class="rounded text-primary focus:ring-primary-container w-3.5 h-3.5 border-outline-variant" type="checkbox"/>
+<span class="text-on-surface">Valentina</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Submit Button Bar -->
+<div class="flex items-center justify-end pt-1 gap-2">
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container font-label-md text-label-md transition-colors" type="reset">
+                Limpiar campos
+              </button>
+<button class="px-4 py-1.5 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-semibold rounded-lg flex items-center gap-1.5 shadow-sm active:scale-[0.98] transition-all" type="submit">
+<span class="material-symbols-outlined" style="font-size: 16px;">add_circle</span>
+<span>Agregar Gasto</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Historial de Gastos Recientes -->
+<div class="space-y-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" style="font-size: 18px;">receipt_long</span>
+<h3 class="font-title-sm text-title-sm text-on-surface font-semibold">Historial de Gastos Recientes</h3>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="font-label-sm text-label-sm">Ordenar por:</span>
+<button class="flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold hover:underline">
+                Fecha reciente
+                <span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_down</span>
+</button>
+</div>
+</div>
+<!-- Ledger Table Container -->
+<div class="border border-outline-variant rounded-xl overflow-hidden bg-surface-container-lowest shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant font-label-sm text-label-sm text-on-surface-variant">
+<th class="py-2.5 px-3 font-medium">Concepto</th>
+<th class="py-2.5 px-3 font-medium">Fecha</th>
+<th class="py-2.5 px-3 font-medium">Pagado por</th>
+<th class="py-2.5 px-3 font-medium">Distribución</th>
+<th class="py-2.5 px-3 font-medium text-right">Importe Total</th>
+<th class="py-2.5 px-2 text-center w-8"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 font-body-md text-body-md">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-surface-variant text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-size: 16px;">restaurant</span>
+</div>
+<div>
+<span class="font-semibold text-on-surface block">Cena Restaurante</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Gastronomía • Mar Azul</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-md text-label-md">
+                    06 Oct
+                  </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary text-[10px] font-bold flex items-center justify-center">CG</span>
+<span class="font-medium text-on-surface">Carlos</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                      Dividido entre 4 ($30.00 c/u)
+                    </span>
+</td>
+<td class="py-3 px-3 text-right">
+<span class="font-currency-table text-currency-table text-on-surface font-bold">$120.00</span>
+</td>
+<td class="py-3 px-2 text-center">
+<button class="opacity-0 group-hover:opacity-100 text-outline hover:text-on-surface p-1 rounded hover:bg-surface-container transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-secondary-container/40 text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-size: 16px;">local_mall</span>
+</div>
+<div>
+<span class="font-semibold text-on-surface block">Compras Supermercado</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Provisiones y bebidas</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-md text-label-md">
+                    05 Oct
+                  </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-surface-variant text-on-surface text-[10px] font-bold flex items-center justify-center">SM</span>
+<span class="font-medium text-on-surface">Sofía</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                      Dividido entre 4 ($20.00 c/u)
+                    </span>
+</td>
+<td class="py-3 px-3 text-right">
+<span class="font-currency-table text-currency-table text-on-surface font-bold">$80.00</span>
+</td>
+<td class="py-3 px-2 text-center">
+<button class="opacity-0 group-hover:opacity-100 text-outline hover:text-on-surface p-1 rounded hover:bg-surface-container transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-size: 16px;">directions_car</span>
+</div>
+<div>
+<span class="font-semibold text-on-surface block">Combustible y Peaje</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Ruta Provincial 11</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-md text-label-md">
+                    05 Oct
+                  </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary text-[10px] font-bold flex items-center justify-center">CG</span>
+<span class="font-medium text-on-surface">Carlos</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                      Dividido entre 4 ($15.00 c/u)
+                    </span>
+</td>
+<td class="py-3 px-3 text-right">
+<span class="font-currency-table text-currency-table text-on-surface font-bold">$60.00</span>
+</td>
+<td class="py-3 px-2 text-center">
+<button class="opacity-0 group-hover:opacity-100 text-outline hover:text-on-surface p-1 rounded hover:bg-surface-container transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 (Previous Alquiler / Sombrilla to match total $320.00) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" style="font-size: 16px;">beach_access</span>
+</div>
+<div>
+<span class="font-semibold text-on-surface block">Alquiler Sombrilla y Carpa</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Balneario Costa</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-on-surface-variant font-label-md text-label-md">
+                    04 Oct
+                  </td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold flex items-center justify-center">VR</span>
+<span class="font-medium text-on-surface">Valentina</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                      Dividido entre 4 ($15.00 c/u)
+                    </span>
+</td>
+<td class="py-3 px-3 text-right">
+<span class="font-currency-table text-currency-table text-on-surface font-bold">$60.00</span>
+</td>
+<td class="py-3 px-2 text-center">
+<button class="opacity-0 group-hover:opacity-100 text-outline hover:text-on-surface p-1 rounded hover:bg-surface-container transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- COLUMN 3: RIGHT SIDEBAR (Balance y Liquidación de Deudas) -->
+<aside class="w-[340px] shrink-0 bg-surface-container-low border-l border-outline-variant flex flex-col justify-between overflow-hidden">
+<div class="p-3.5 flex flex-col h-full overflow-y-auto space-y-4">
+<!-- Section 1: Resumen y Saldos Individuales -->
+<div>
+<div class="flex items-center justify-between pb-2 mb-2.5 border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">account_balance_wallet</span>
+<h2 class="font-title-sm text-title-sm text-on-surface font-semibold">Resumen y Saldos</h2>
+</div>
+<span class="font-label-sm text-[11px] text-on-surface-variant">Base cuota: $80.00</span>
+</div>
+<!-- Individual Balance Cards Grid -->
+<div class="space-y-2">
+<!-- Carlos: Pagó $180.00 -> Saldo: +$100.00 (A favor) -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between hover:border-secondary transition-all">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold text-label-sm">
+                  CG
+                </div>
+<div>
+<span class="font-body-md text-body-md font-semibold text-on-surface block leading-tight">Carlos</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $180.00</span>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] font-currency-table text-currency-table font-bold">
+                  +$100.00
+                </span>
+<span class="block text-[10px] text-secondary font-semibold text-right mt-0.5">A favor</span>
+</div>
+</div>
+<!-- Sofía: Pagó $80.00 -> Saldo: $0.00 (Al día) -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between hover:border-outline transition-all">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-label-md font-bold text-label-sm">
+                  SM
+                </div>
+<div>
+<span class="font-body-md text-body-md font-semibold text-on-surface block leading-tight">Sofía</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $80.00</span>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#F1F5F9] border border-[#E2E8F0] text-[#475569] font-currency-table text-currency-table font-semibold">
+                  $0.00
+                </span>
+<span class="block text-[10px] text-on-surface-variant font-medium text-right mt-0.5">Al día</span>
+</div>
+</div>
+<!-- Mateo: Pagó $0.00 -> Saldo: -$50.00 (Debe) (Total consumed: $80 base - remaining after partial = -$50.00 debt) -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between hover:border-error transition-all">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-md font-bold text-label-sm">
+                  MS
+                </div>
+<div>
+<span class="font-body-md text-body-md font-semibold text-on-surface block leading-tight">Mateo</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $0.00</span>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] font-currency-table text-currency-table font-bold">
+                  -$50.00
+                </span>
+<span class="block text-[10px] text-error font-semibold text-right mt-0.5">Debe</span>
+</div>
+</div>
+<!-- Valentina: Pagó $60.00 -> Saldo: -$50.00 (Debe) -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl flex items-center justify-between hover:border-error transition-all">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-label-md font-bold text-label-sm">
+                  VR
+                </div>
+<div>
+<span class="font-body-md text-body-md font-semibold text-on-surface block leading-tight">Valentina</span>
+<span class="text-on-surface-variant font-label-sm text-[11px]">Pagó $60.00</span>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] font-currency-table text-currency-table font-bold">
+                  -$50.00
+                </span>
+<span class="block text-[10px] text-error font-semibold text-right mt-0.5">Debe</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Propuesta de Transferencias (Simplificación de Deudas) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 pb-2 mb-2 border-b border-outline-variant">
+<span class="material-symbols-outlined text-secondary" style="font-size: 18px;">sync_alt</span>
+<h3 class="font-title-sm text-title-sm text-on-surface font-semibold">Propuesta de Transferencias</h3>
+</div>
+<p class="font-label-sm text-[11px] text-on-surface-variant mb-2.5">
+              Algoritmo de liquidación mínima: <strong>2 transferencias</strong> para saldar todas las cuentas:
+            </p>
+<!-- Transfer Cards -->
+<div class="space-y-2.5">
+<!-- Transfer 1: Mateo -> Carlos ($50.00) -->
+<div class="p-2.5 bg-surface-container-low border border-outline-variant rounded-lg space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-label-md font-medium text-on-surface">
+<span class="font-semibold text-error">Mateo</span>
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">trending_flat</span>
+<span class="font-semibold text-secondary">Carlos</span>
+</div>
+<span class="font-currency-table text-currency-table font-bold text-on-surface">$50.00</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-on-surface-variant font-label-sm text-[10px]">CBU / Alias disponible</span>
+<button class="px-2.5 py-1 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] hover:bg-[#D1FAE5] rounded-md font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1 active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 14px;">check</span>
+<span>Marcar pagado</span>
+</button>
+</div>
+</div>
+<!-- Transfer 2: Valentina -> Carlos ($50.00) -->
+<div class="p-2.5 bg-surface-container-low border border-outline-variant rounded-lg space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-label-md font-medium text-on-surface">
+<span class="font-semibold text-error">Valentina</span>
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">trending_flat</span>
+<span class="font-semibold text-secondary">Carlos</span>
+</div>
+<span class="font-currency-table text-currency-table font-bold text-on-surface">$50.00</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-on-surface-variant font-label-sm text-[10px]">Transferencia directa</span>
+<button class="px-2.5 py-1 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] hover:bg-[#D1FAE5] rounded-md font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1 active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 14px;">check</span>
+<span>Marcar pagado</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Friendly Helper Callout Footer -->
+<div class="mt-3 p-2 bg-secondary-container/20 border border-secondary/30 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary shrink-0" style="font-size: 16px;">info</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant leading-tight">
+              Al confirmar estas 2 transferencias, el balance del grupo quedará en <strong>$0.00 (Liquidado)</strong>.
+            </span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Desktop App Bottom Status Strip -->
+<footer class="h-6 bg-surface-container-low border-t border-outline-variant px-3 flex items-center justify-between text-on-surface-variant font-label-sm text-[11px] shrink-0">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        Conectado a la base local
+      </span>
+<span>Grupo ID: #GRP-2026-PLAYA</span>
+<span>Moneda: ARS ($)</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="hover:text-on-surface cursor-pointer">Sincronización en la nube: Activa</span>
+<span class="hover:text-on-surface cursor-pointer">v2.4.0 Desktop</span>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GruPay - Gestor de Gastos Compartidos</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-dim": "#cbdbf5",
+            "primary-fixed": "#e2dfff",
+            "primary-container": "#4f46e5",
+            "on-secondary-fixed": "#002113",
+            "on-primary-container": "#dad7ff",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed": "#410004",
+            "inverse-primary": "#c3c0ff",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-fixed-variant": "#930013",
+            "error": "#ba1a1a",
+            "surface": "#f8f9ff",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-secondary-container": "#00714d",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "tertiary-container": "#bc1d25",
+            "tertiary": "#960014",
+            "secondary-fixed": "#6ffbbe",
+            "outline-variant": "#c7c4d8",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#464555",
+            "on-primary-fixed": "#0f0069",
+            "primary": "#3525cd",
+            "surface-variant": "#d3e4fe",
+            "surface-tint": "#4d44e3",
+            "outline": "#777587",
+            "on-secondary": "#ffffff",
+            "background": "#f8f9ff",
+            "surface-bright": "#f8f9ff",
+            "secondary-container": "#6cf8bb",
+            "surface-container": "#e5eeff",
+            "tertiary-fixed": "#ffdad7",
+            "surface-container-low": "#eff4ff",
+            "surface-container-high": "#dce9ff",
+            "inverse-on-surface": "#eaf1ff",
+            "on-primary-fixed-variant": "#3323cc",
+            "on-background": "#0b1c30",
+            "on-surface": "#0b1c30",
+            "on-error-container": "#93000a",
+            "secondary": "#006c49",
+            "error-container": "#ffdad6",
+            "inverse-surface": "#213145",
+            "on-tertiary-container": "#ffd0cc",
+            "on-secondary-fixed-variant": "#005236",
+            "surface-container-highest": "#d3e4fe",
+            "secondary-fixed-dim": "#4edea3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "space-xl": "1.5rem",
+            "space-md": "0.75rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "title-sm": ["Inter"],
+            "currency-display": ["Inter"],
+            "currency-table": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "body-lg": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "display-lg": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "title-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "currency-display": ["28px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "currency-table": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface h-full flex flex-col font-body-md text-body-md antialiased select-none overflow-hidden">
+<!-- Desktop App Window Container -->
+<div class="flex-1 flex flex-col m-2 md:m-4 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<!-- 1. Window Top Bar (Native macOS/Windows Hybrid Desktop Chrome) -->
+<header class="bg-surface-container-low border-b border-outline-variant px-3 py-2 flex items-center justify-between gap-4 h-11 shrink-0">
+<!-- Left: Window Dots & App Title -->
+<div class="flex items-center gap-3">
+<!-- macOS Window Action Nodes -->
+<div class="flex items-center gap-1.5 pr-2 border-r border-outline-variant">
+<span class="w-3 h-3 rounded-full bg-[#EF4444] inline-block hover:opacity-80 cursor-pointer"></span>
+<span class="w-3 h-3 rounded-full bg-[#F59E0B] inline-block hover:opacity-80 cursor-pointer"></span>
+<span class="w-3 h-3 rounded-full bg-[#10B981] inline-block hover:opacity-80 cursor-pointer"></span>
+</div>
+<!-- App Title Badge -->
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">GruPay</span>
+<span class="text-outline text-label-sm font-label-sm">•</span>
+<span class="text-on-surface font-title-sm text-title-sm font-medium">Gestor de Gastos Compartidos</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-1.5 py-0.5 rounded">Taller Estudiantil</span>
+</div>
+</div>
+<!-- Right: Window Utility Controls -->
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button class="p-1 rounded hover:bg-surface-container transition-colors duration-150" title="Información del Proyecto" type="button">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="flex items-center gap-1 pl-2 border-l border-outline-variant text-label-sm font-label-sm text-outline">
+<span>v1.0.4-dev</span>
+</div>
+</div>
+</header>
+<!-- Navigation Tabs Bar -->
+<nav class="bg-surface border-b border-outline-variant px-6 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-8 -mb-px">
+<!-- Tab 1: Participantes (ACTIVE) -->
+<a class="flex items-center gap-2 py-3 text-primary font-title-sm text-title-sm font-semibold border-b-2 border-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
+<span>1. Participantes</span>
+<span class="ml-1 px-1.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm">4</span>
+</a>
+<!-- Tab 2: Gastos -->
+<a class="flex items-center gap-2 py-3 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-outline" data-icon="receipt_long">receipt_long</span>
+<span>2. Gastos</span>
+</a>
+<!-- Tab 3: Saldos y Deudas -->
+<a class="flex items-center gap-2 py-3 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-outline" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>3. Saldos y Deudas</span>
+</a>
+</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+<span>Espacio local de trabajo</span>
+</div>
+</nav>
+<!-- Main Workspace Content (Desktop Canvas) -->
+<main class="flex-1 overflow-y-auto p-6 bg-surface flex flex-col gap-6">
+<!-- Card 1: Group Management (RF1 / RF10) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between pb-4 mb-4 border-b border-outline-variant gap-3">
+<div class="flex items-center gap-2.5">
+<span class="p-1.5 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</span>
+<div>
+<h2 class="text-title-sm font-title-sm font-bold text-on-surface">Configuración del Grupo</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Define los parámetros iniciales y el archivo de persistencia local</p>
+</div>
+</div>
+<!-- Status Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-secondary text-label-sm font-label-sm border border-secondary-fixed">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-semibold">Estado: Grupo activo</span>
+<span class="text-outline">•</span>
+<span class="text-on-surface-variant">4 integrantes</span>
+</div>
+</div>
+<!-- Horizontal Form Layout -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+<!-- Input Field Container -->
+<div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-3">
+<label class="text-label-md font-label-md font-semibold text-on-surface shrink-0" for="group-name">
+              Nombre del Grupo:
+            </label>
+<div class="relative flex-1 max-w-md">
+<input class="w-full h-[34px] px-3 text-body-lg font-body-lg rounded border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-fixed transition-all" id="group-name" placeholder="Nombre del grupo..." type="text" value="Viaje a la Playa"/>
+</div>
+</div>
+<!-- Grouped Action Buttons -->
+<div class="flex items-center gap-2 shrink-0">
+<!-- Crear Grupo (Primary) -->
+<button class="h-[34px] px-4 rounded bg-primary-container text-on-primary font-label-md text-label-md font-medium hover:bg-primary transition-all duration-150 active:scale-[0.98] flex items-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="group_add">group_add</span>
+<span>Crear Grupo</span>
+</button>
+<!-- Guardar (Secondary Clean Outlined) -->
+<button class="h-[34px] px-3.5 rounded border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container transition-colors duration-150 active:scale-[0.98] flex items-center gap-1.5" title="Guardar grupo en disco" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="save">save</span>
+<span>Guardar</span>
+</button>
+<!-- Cargar (Secondary Button) -->
+<button class="h-[34px] px-3.5 rounded border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container transition-colors duration-150 active:scale-[0.98] flex items-center gap-1.5" title="Cargar grupo existente" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="folder_open">folder_open</span>
+<span>Cargar</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Card 2: Participants Section (RF2) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm flex flex-col flex-1 min-h-[360px] overflow-hidden">
+<!-- Header -->
+<div class="p-5 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface-container-lowest">
+<div class="flex items-center gap-2.5">
+<span class="p-1.5 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+</span>
+<div>
+<h2 class="text-title-sm font-title-sm font-bold text-on-surface">Gestión de Participantes</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Registra quiénes forman parte de los gastos grupales para el cálculo equitativo</p>
+</div>
+</div>
+<!-- Input Bar to Add Participant -->
+<div class="flex items-center gap-2 w-full md:w-auto">
+<div class="relative w-full md:w-80">
+<input class="w-full h-[34px] pl-3 pr-8 text-body-md font-body-md rounded border border-outline-variant bg-surface-container-lowest text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-fixed transition-all" id="participant-name" placeholder="Nombre del participante (ej. Martín...)" type="text"/>
+<span class="absolute right-2.5 top-2 text-outline pointer-events-none">
+<span class="material-symbols-outlined text-[15px]" data-icon="person">person</span>
+</span>
+</div>
+<button class="h-[34px] px-3.5 rounded bg-primary-container text-on-primary font-label-md text-label-md font-medium hover:bg-primary transition-all duration-150 active:scale-[0.98] flex items-center gap-1 shrink-0 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+<span>Agregar Participante</span>
+</button>
+</div>
+</div>
+<!-- Participants Table View -->
+<div class="flex-1 overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">
+<th class="py-2.5 px-4 w-16 text-center">#</th>
+<th class="py-2.5 px-4">Nombre</th>
+<th class="py-2.5 px-4 w-44">Rol / Estado</th>
+<th class="py-2.5 px-4 w-32 text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1: Carlos Gómez (Organizador) -->
+<tr class="hover:bg-surface transition-colors duration-150">
+<td class="py-3 px-4 text-center font-currency-table text-currency-table text-on-surface-variant font-semibold">1</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-label-sm font-label-sm">
+                      CG
+                    </div>
+<div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface">Carlos Gómez</span>
+<span class="ml-2 text-label-sm font-label-sm text-outline">(Tú)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-primary font-label-sm text-label-sm font-semibold border border-primary-fixed">
+<span class="material-symbols-outlined text-[13px]" data-icon="star">star</span>
+                    Organizador
+                  </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded text-outline hover:text-error hover:bg-error-container transition-colors duration-150 text-label-md font-label-md" title="Eliminar participante" type="button">
+                    Eliminar
+                  </button>
+</td>
+</tr>
+<!-- Row 2: Sofía Martínez (Miembro) -->
+<tr class="hover:bg-surface transition-colors duration-150">
+<td class="py-3 px-4 text-center font-currency-table text-currency-table text-on-surface-variant font-semibold">2</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-bold text-label-sm font-label-sm">
+                      SM
+                    </div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface">Sofía Martínez</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+                    Miembro
+                  </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded text-outline hover:text-error hover:bg-error-container transition-colors duration-150 text-label-md font-label-md" title="Eliminar participante" type="button">
+                    Eliminar
+                  </button>
+</td>
+</tr>
+<!-- Row 3: Mateo Silva (Miembro) -->
+<tr class="hover:bg-surface transition-colors duration-150">
+<td class="py-3 px-4 text-center font-currency-table text-currency-table text-on-surface-variant font-semibold">3</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-bold text-label-sm font-label-sm">
+                      MS
+                    </div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface">Mateo Silva</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+                    Miembro
+                  </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded text-outline hover:text-error hover:bg-error-container transition-colors duration-150 text-label-md font-label-md" title="Eliminar participante" type="button">
+                    Eliminar
+                  </button>
+</td>
+</tr>
+<!-- Row 4: Valentina Ríos (Miembro) -->
+<tr class="hover:bg-surface transition-colors duration-150">
+<td class="py-3 px-4 text-center font-currency-table text-currency-table text-on-surface-variant font-semibold">4</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-bold text-label-sm font-label-sm">
+                      VR
+                    </div>
+<span class="font-body-lg text-body-lg font-medium text-on-surface">Valentina Ríos</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+                    Miembro
+                  </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded text-outline hover:text-error hover:bg-error-container transition-colors duration-150 text-label-md font-label-md" title="Eliminar participante" type="button">
+                    Eliminar
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Bottom Footer in Card -->
+<div class="p-4 bg-surface-container-low border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+<div class="flex items-center gap-2 text-on-surface-variant text-body-md font-body-md">
+<span class="material-symbols-outlined text-outline" data-icon="check_circle">check_circle</span>
+<span class="font-medium text-on-surface">Total:</span>
+<span>4 participantes registrados</span>
+<span class="text-outline mx-1">•</span>
+<span class="text-label-sm font-label-sm text-outline">Todos listos para registrar gastos</span>
+</div>
+<!-- Quick Navigation Action Button -->
+<a class="h-[34px] px-4 rounded bg-primary-container text-on-primary font-label-md text-label-md font-semibold hover:bg-primary transition-all duration-150 active:scale-[0.98] inline-flex items-center gap-2 shadow-sm" href="#">
+<span>Continuar a Gastos</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</section>
+</main>
+<!-- Desktop Window Status Bar (Bottom Minimal Strip) -->
+<footer class="h-6 bg-surface-container border-t border-outline-variant px-4 flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant shrink-0 select-none">
+<div class="flex items-center gap-4">
+<span>Archivo: <strong class="font-medium text-on-surface">viaje_playa_2025.json</strong></span>
+<span>División: <strong class="font-medium text-on-surface">Equitativa (1/4 c/u)</strong></span>
+</div>
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          Listo para ingresar comprobantes
+        </span>
+<span class="text-outline">|</span>
+<span>UTF-8</span>
+</div>
+</footer>
+</div>
+</body></html>

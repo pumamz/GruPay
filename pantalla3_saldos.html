@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GruPay - 3. Saldos y Deudas (Liquidación)</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary": "#3525cd",
+            "surface-container-high": "#dce9ff",
+            "tertiary-container": "#bc1d25",
+            "surface-container": "#e5eeff",
+            "secondary-fixed-dim": "#4edea3",
+            "on-tertiary-fixed": "#410004",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "tertiary-fixed": "#ffdad7",
+            "secondary": "#006c49",
+            "secondary-container": "#6cf8bb",
+            "surface-dim": "#cbdbf5",
+            "on-secondary-fixed": "#002113",
+            "inverse-primary": "#c3c0ff",
+            "inverse-on-surface": "#eaf1ff",
+            "on-surface": "#0b1c30",
+            "on-background": "#0b1c30",
+            "on-primary": "#ffffff",
+            "primary-container": "#4f46e5",
+            "on-tertiary": "#ffffff",
+            "on-error-container": "#93000a",
+            "surface": "#f8f9ff",
+            "surface-container-low": "#eff4ff",
+            "primary-fixed-dim": "#c3c0ff",
+            "surface-tint": "#4d44e3",
+            "secondary-fixed": "#6ffbbe",
+            "outline": "#777587",
+            "tertiary": "#960014",
+            "primary-fixed": "#e2dfff",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#dad7ff",
+            "inverse-surface": "#213145",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#005236",
+            "on-surface-variant": "#464555",
+            "error": "#ba1a1a",
+            "outline-variant": "#c7c4d8",
+            "on-tertiary-container": "#ffd0cc",
+            "on-primary-fixed": "#0f0069",
+            "surface-bright": "#f8f9ff",
+            "surface-variant": "#d3e4fe",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#930013",
+            "surface-container-highest": "#d3e4fe",
+            "background": "#f8f9ff",
+            "on-secondary-container": "#00714d",
+            "on-primary-fixed-variant": "#3323cc"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem",
+            "space-lg": "1rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "1.5rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "currency-display": ["Inter"],
+            "label-md": ["Inter"],
+            "title-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-lg": ["Inter"],
+            "currency-table": ["Inter"]
+          },
+          "fontSize": {
+            "currency-display": ["28px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "title-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-lg": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "display-lg": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+            "currency-table": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #c7c4d8;
+      border-radius: 3px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #777587;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex flex-col font-body-md text-body-md select-none antialiased overflow-hidden">
+<!-- Desktop App Window Shell Wrapper -->
+<div class="flex-1 flex flex-col h-full w-full bg-surface-container-lowest overflow-hidden">
+<!-- 1. Window Header Bar (Desktop Native Chrome) -->
+<header class="flex items-center justify-between px-3 h-10 bg-surface-container-low border-b border-outline-variant select-none shrink-0">
+<!-- Mac Window Controls & App Identity -->
+<div class="flex items-center gap-3">
+<!-- Mac Traffic Lights -->
+<div class="flex items-center gap-2 pr-2">
+<div class="w-3 h-3 rounded-full bg-[#EF4444] border border-[#DC2626] cursor-pointer hover:opacity-80"></div>
+<div class="w-3 h-3 rounded-full bg-[#F59E0B] border border-[#D97706] cursor-pointer hover:opacity-80"></div>
+<div class="w-3 h-3 rounded-full bg-[#10B981] border border-[#059669] cursor-pointer hover:opacity-80"></div>
+</div>
+<!-- App Identity -->
+<div class="flex items-center gap-2 pl-1 border-l border-outline-variant/60">
+<span class="text-title-sm font-title-sm text-primary tracking-tight font-bold">GruPay</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant text-slate-500 font-normal">| Gestor de Gastos Compartidos</span>
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-primary font-medium border border-outline-variant/50">Taller Estudiantil</span>
+</div>
+</div>
+<!-- Window Header Right Controls -->
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1 text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm py-1 px-1.5 rounded hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="help">help</span>
+<span>Ayuda</span>
+</button>
+<span class="text-label-sm font-label-sm font-mono text-outline">v1.0.4-desktop</span>
+</div>
+</header>
+<!-- 2. Horizontal Tab Navigation & Status -->
+<nav class="flex items-center justify-between px-4 h-11 bg-surface-container-lowest border-b border-outline-variant shrink-0">
+<div class="flex items-center gap-6 h-full">
+<!-- Tab 1 -->
+<button class="flex items-center gap-2 h-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-1 border-b-2 border-transparent">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+<span>1. Participantes (4)</span>
+</button>
+<!-- Tab 2 -->
+<button class="flex items-center gap-2 h-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-1 border-b-2 border-transparent">
+<span class="material-symbols-outlined text-[18px]" data-icon="receipt_long">receipt_long</span>
+<span>2. Gastos (3)</span>
+</button>
+<!-- Tab 3 (ACTIVE) -->
+<div class="flex items-center gap-2 h-full text-primary font-semibold font-label-md text-label-md px-1 border-b-2 border-primary">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="account_balance_wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span>3. Saldos y Deudas</span>
+<span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-primary text-on-primary ml-0.5">ACTIVO</span>
+</div>
+</div>
+<!-- Right Status Flag -->
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container-low border border-outline-variant/60">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-label-sm font-label-sm text-on-surface font-medium">Espacio local de trabajo</span>
+</div>
+</nav>
+<!-- 3. Main Content Canvas -->
+<main class="flex-1 overflow-y-auto custom-scroll p-5 bg-surface space-y-4">
+<!-- Top Title & Global Group Balance Summary Banner -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm">
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-headline-md font-headline-md text-on-surface">Liquidación y Cierre de Balances</h1>
+<span class="px-2 py-0.5 text-label-sm font-label-sm bg-surface-container text-primary font-semibold rounded-md border border-outline-variant/40">RF7 • RF8 • RF9</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-0.5">
+            Cálculo de balance individual y transferencias mínimas sugeridas para saldar las cuentas
+          </p>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-[#ECFDF5] border border-[#A7F3D0] rounded-xl shrink-0 self-start sm:self-auto">
+<span class="w-2.5 h-2.5 rounded-full bg-[#047857] animate-pulse"></span>
+<span class="text-label-md font-label-md text-[#047857] font-semibold">Estado: Cuentas balanceadas ($320.00 total)</span>
+</div>
+</div>
+<!-- SECTION 1: Resumen de Saldos Individuales (RF7, RF8) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<!-- Section Header -->
+<div class="flex items-center justify-between px-4 py-3 bg-surface-container-low border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="balance">balance</span>
+<h2 class="text-title-sm font-title-sm text-on-surface">Resumen de Saldos Individuales</h2>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+              Comparativa de lo abonado contra la cuota consumida de cada participante ($80.00 c/u)
+            </p>
+</div>
+<div class="hidden sm:flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant bg-surface-container-lowest px-2.5 py-1 rounded border border-outline-variant/60">
+<span class="font-semibold text-on-surface">4 Integrantes</span>
+<span>•</span>
+<span>Gasto promedio: $80.00</span>
+</div>
+</div>
+<!-- Clean Crisp Desktop Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">
+<th class="py-2.5 px-4 font-semibold">Participante</th>
+<th class="py-2.5 px-4 font-semibold text-right">Total Pagado</th>
+<th class="py-2.5 px-4 font-semibold text-right">Cuota Consumida</th>
+<th class="py-2.5 px-4 font-semibold text-center">Saldo Neto</th>
+<th class="py-2.5 px-4 font-semibold text-left">Situación</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 text-body-md font-body-md">
+<!-- Row 1: Carlos Gómez -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-label-md">
+                      CG
+                    </div>
+<div>
+<span class="font-semibold text-on-surface">Carlos Gómez</span>
+<span class="text-label-sm text-on-surface-variant block text-slate-500">carlos.gomez@ejemplo.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface">
+                  $180.00
+                </td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface-variant">
+                  $80.00
+                </td>
+<td class="py-3 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm font-semibold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]">
+<span class="material-symbols-outlined text-[14px]" data-icon="north_east">north_east</span>
+                    +$100.00 (A favor)
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5 text-secondary font-medium text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="savings">savings</span>
+<span>Recibe dinero</span>
+</div>
+</td>
+</tr>
+<!-- Row 2: Sofía Martínez -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface flex items-center justify-center font-bold text-label-md border border-outline-variant/50">
+                      SM
+                    </div>
+<div>
+<span class="font-semibold text-on-surface">Sofía Martínez</span>
+<span class="text-label-sm text-on-surface-variant block text-slate-500">sofia.martinez@ejemplo.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface">
+                  $80.00
+                </td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface-variant">
+                  $80.00
+                </td>
+<td class="py-3 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm font-semibold bg-surface-container-low text-on-surface-variant border border-outline-variant/80">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+                    $0.00 (Al día / Equilibrado)
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="done_all">done_all</span>
+<span>Sin deuda</span>
+</div>
+</td>
+</tr>
+<!-- Row 3: Valentina Ríos -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] flex items-center justify-center font-bold text-label-md">
+                      VR
+                    </div>
+<div>
+<span class="font-semibold text-on-surface">Valentina Ríos</span>
+<span class="text-label-sm text-on-surface-variant block text-slate-500">valentina.rios@ejemplo.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface">
+                  $60.00
+                </td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface-variant">
+                  $80.00
+                </td>
+<td class="py-3 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm font-semibold bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]">
+<span class="material-symbols-outlined text-[14px]" data-icon="south_east">south_east</span>
+                    -$20.00 (Debe dinero)
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5 text-[#B91C1C] font-medium text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="pending">pending</span>
+<span>Pendiente transferir</span>
+</div>
+</td>
+</tr>
+<!-- Row 4: Mateo Silva -->
+<tr class="hover:bg-surface-container-low transition-colors duration-150">
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] flex items-center justify-center font-bold text-label-md">
+                      MS
+                    </div>
+<div>
+<span class="font-semibold text-on-surface">Mateo Silva</span>
+<span class="text-label-sm text-on-surface-variant block text-slate-500">mateo.silva@ejemplo.com</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface">
+                  $0.00
+                </td>
+<td class="py-3 px-4 text-right font-currency-table text-currency-table text-on-surface-variant">
+                  $80.00
+                </td>
+<td class="py-3 px-4 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm font-semibold bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]">
+<span class="material-symbols-outlined text-[14px]" data-icon="south_east">south_east</span>
+                    -$80.00 (Debe dinero)
+                  </span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5 text-[#B91C1C] font-medium text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="pending">pending</span>
+<span>Pendiente transferir</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- SECTION 2: Transferencias para Cancelar Deudas (RF9) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<!-- Section Header -->
+<div class="px-4 py-3 bg-surface-container-low border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="swap_horiz">swap_horiz</span>
+<h2 class="text-title-sm font-title-sm text-on-surface">Transferencias Óptimas Sugeridas</h2>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+              2 transferencias necesarias para liquidar todas las deudas del grupo
+            </p>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container text-primary font-label-sm font-semibold border border-outline-variant/50 self-start sm:self-auto">
+<span class="material-symbols-outlined text-[16px]" data-icon="auto_fix_high">auto_fix_high</span>
+<span>Algoritmo de compensación mínima</span>
+</div>
+</div>
+<!-- Transfer Rows List -->
+<div class="p-4 space-y-3">
+<!-- Transfer 1: Mateo Silva -> Carlos Gómez -->
+<div class="flex flex-col md:flex-row md:items-center justify-between p-3.5 rounded-xl border border-outline-variant bg-surface-container-lowest hover:border-primary/50 transition-all gap-4">
+<!-- Source & Target Flow -->
+<div class="flex items-center gap-3">
+<!-- Source -->
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-bold text-label-md flex items-center justify-center border border-[#FECACA]">
+                  MS
+                </div>
+<div>
+<div class="text-title-sm font-title-sm text-on-surface">Mateo Silva</div>
+<div class="text-label-sm text-on-surface-variant text-slate-500">Deudor</div>
+</div>
+</div>
+<!-- Direction Arrow -->
+<div class="flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px] text-primary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- Target -->
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary font-bold text-label-md flex items-center justify-center">
+                  CG
+                </div>
+<div>
+<div class="text-title-sm font-title-sm text-on-surface">Carlos Gómez</div>
+<div class="text-label-sm text-secondary font-medium">Beneficiario</div>
+</div>
+</div>
+</div>
+<!-- Amount, Details & Action -->
+<div class="flex items-center justify-between md:justify-end gap-5 border-t md:border-t-0 pt-2 md:pt-0 border-outline-variant/40">
+<div class="text-right">
+<div class="font-currency-display text-currency-display text-on-surface tracking-tight">$80.00</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant text-slate-500">Transferencia directa CBU / Alias</div>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] hover:bg-[#D1FAE5] font-label-md font-semibold transition-colors shrink-0 shadow-xs active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+<span>Marcar Pagado</span>
+</button>
+</div>
+</div>
+<!-- Transfer 2: Valentina Ríos -> Carlos Gómez -->
+<div class="flex flex-col md:flex-row md:items-center justify-between p-3.5 rounded-xl border border-outline-variant bg-surface-container-lowest hover:border-primary/50 transition-all gap-4">
+<!-- Source & Target Flow -->
+<div class="flex items-center gap-3">
+<!-- Source -->
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-[#FEF2F2] text-[#B91C1C] font-bold text-label-md flex items-center justify-center border border-[#FECACA]">
+                  VR
+                </div>
+<div>
+<div class="text-title-sm font-title-sm text-on-surface">Valentina Ríos</div>
+<div class="text-label-sm text-on-surface-variant text-slate-500">Deudor</div>
+</div>
+</div>
+<!-- Direction Arrow -->
+<div class="flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px] text-primary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- Target -->
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary font-bold text-label-md flex items-center justify-center">
+                  CG
+                </div>
+<div>
+<div class="text-title-sm font-title-sm text-on-surface">Carlos Gómez</div>
+<div class="text-label-sm text-secondary font-medium">Beneficiario</div>
+</div>
+</div>
+</div>
+<!-- Amount, Details & Action -->
+<div class="flex items-center justify-between md:justify-end gap-5 border-t md:border-t-0 pt-2 md:pt-0 border-outline-variant/40">
+<div class="text-right">
+<div class="font-currency-display text-currency-display text-on-surface tracking-tight">$20.00</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant text-slate-500">Transferencia directa CBU / Efectivo</div>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] hover:bg-[#D1FAE5] font-label-md font-semibold transition-colors shrink-0 shadow-xs active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+<span>Marcar Pagado</span>
+</button>
+</div>
+</div>
+<!-- Settlement Callout Note -->
+<div class="flex items-center gap-3 p-3 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857]">
+<span class="material-symbols-outlined text-[20px] shrink-0" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-body-md font-body-md font-medium">
+              Al completarse estas 2 transferencias, el balance total del grupo quedará en $0.00 (Cuentas saldadas).
+            </span>
+</div>
+</div>
+</section>
+</main>
+<!-- 4. Bottom Footer Action Bar -->
+<footer class="flex items-center justify-between px-4 h-12 bg-surface-container-low border-t border-outline-variant shrink-0">
+<!-- Left Back Action -->
+<div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container text-on-surface text-label-md font-label-md font-medium transition-colors shadow-xs active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_back">arrow_back</span>
+<span>Volver a Gastos</span>
+</button>
+</div>
+<!-- Center Info -->
+<div class="hidden sm:flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="insights">insights</span>
+<span>Total compensado: <strong class="text-on-surface">$100.00</strong> de deudas saldadas entre integrantes</span>
+</div>
+<!-- Right Primary Blue Button -->
+<div>
+<button class="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-primary-container text-on-primary hover:bg-[#4338CA] text-label-md font-label-md font-semibold transition-colors shadow-xs active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="file_download">file_download</span>
+<span>Guardar Resumen / Exportar Liquidación</span>
+</button>
+</div>
+</footer>
+<!-- 5. App Status Bar (Desktop Native Bottom Edge) -->
+<div class="flex items-center justify-between px-3 h-6 bg-surface-container-lowest border-t border-outline-variant text-[11px] font-mono text-outline select-none shrink-0">
+<div class="flex items-center gap-2">
+<span>Archivo: <strong class="text-on-surface-variant font-normal">viaje_playa_2025.json</strong></span>
+<span>•</span>
+<span>Moneda: ARS ($)</span>
+<span>•</span>
+<span class="inline-flex items-center gap-1 text-[#047857]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+          Liquidación lista para ejecutar
+        </span>
+</div>
+<div class="flex items-center gap-3">
+<span>UTF-8</span>
+<span>•</span>
+<span>GruPay Desktop Core</span>
+</div>
+</div>
+</div>
+</body></html>

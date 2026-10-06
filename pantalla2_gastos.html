@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GruPay - 2. Registro de Gastos</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-highest": "#d3e4fe",
+            "on-tertiary-container": "#ffd0cc",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#005236",
+            "error": "#ba1a1a",
+            "surface-variant": "#d3e4fe",
+            "background": "#f8f9ff",
+            "secondary-container": "#6cf8bb",
+            "inverse-primary": "#c3c0ff",
+            "outline-variant": "#c7c4d8",
+            "primary-container": "#4f46e5",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#dad7ff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#3323cc",
+            "surface-bright": "#f8f9ff",
+            "on-tertiary-fixed": "#410004",
+            "outline": "#777587",
+            "on-tertiary-fixed-variant": "#930013",
+            "on-secondary-fixed": "#002113",
+            "on-secondary-container": "#00714d",
+            "on-primary-fixed": "#0f0069",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed-dim": "#4edea3",
+            "surface-container": "#e5eeff",
+            "secondary": "#006c49",
+            "on-primary": "#ffffff",
+            "error-container": "#ffdad6",
+            "tertiary": "#960014",
+            "tertiary-container": "#bc1d25",
+            "on-background": "#0b1c30",
+            "primary": "#3525cd",
+            "surface-tint": "#4d44e3",
+            "inverse-on-surface": "#eaf1ff",
+            "primary-fixed-dim": "#c3c0ff",
+            "inverse-surface": "#213145",
+            "surface": "#f8f9ff",
+            "on-surface-variant": "#464555",
+            "tertiary-fixed-dim": "#ffb3ad",
+            "tertiary-fixed": "#ffdad7",
+            "on-surface": "#0b1c30",
+            "on-error-container": "#93000a",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#e2dfff",
+            "surface-container-high": "#dce9ff",
+            "secondary-fixed": "#6ffbbe"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "gutter": "1rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "currency-display": ["Inter"],
+            "headline-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "currency-table": ["Inter"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "display-lg": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+            "currency-display": ["28px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "headline-lg": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "title-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "currency-table": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "body-lg": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md h-full flex flex-col antialiased selection:bg-primary selection:text-on-primary">
+<!-- Desktop Window Chrome / Top Header -->
+<header class="bg-surface-container-lowest border-b border-outline-variant select-none shrink-0 px-4 h-12 flex items-center justify-between">
+<!-- Window Controls & Project Logo -->
+<div class="flex items-center gap-4">
+<!-- macOS Style Nodes -->
+<div aria-hidden="true" class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-[#EF4444] border border-[#DC2626] inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-[#F59E0B] border border-[#D97706] inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-[#10B981] border border-[#059669] inline-block"></span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<!-- App Title & Identity -->
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="splitscreen">splitscreen</span>
+          GruPay
+        </span>
+<span class="text-outline-variant text-[13px]">•</span>
+<span class="font-title-sm text-title-sm text-on-surface">Gestor de Gastos Compartidos</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-low text-primary border border-outline-variant">
+          Taller Estudiantil
+        </span>
+</div>
+</div>
+<!-- Header Actions & Meta -->
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono bg-surface-container-low px-2 py-0.5 rounded border border-outline-variant">
+        v1.0.4-desktop
+      </span>
+<button class="text-on-surface-variant hover:text-on-surface p-1 rounded hover:bg-surface-container transition-colors duration-150" title="Manual y atajos de teclado" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+</button>
+</div>
+</header>
+<!-- Horizontal Navigation Tabs -->
+<nav class="bg-surface-container-lowest border-b border-outline-variant px-6 flex items-center justify-between shrink-0 select-none">
+<div class="flex items-center gap-6">
+<!-- Tab 1 -->
+<a class="py-3 text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-2 border-b-2 border-transparent transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="groups">groups</span>
+<span>1. Participantes (4)</span>
+</a>
+<!-- Tab 2: ACTIVE -->
+<a aria-current="page" class="py-3 text-primary font-title-sm text-title-sm flex items-center gap-2 border-b-2 border-primary transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="receipt_long">receipt_long</span>
+<span>2. Gastos</span>
+<span class="bg-primary text-on-primary text-label-sm font-label-sm px-1.5 py-0.2 rounded-full leading-none">3</span>
+</a>
+<!-- Tab 3 -->
+<a class="py-3 text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-2 border-b-2 border-transparent transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>3. Saldos y Deudas</span>
+</a>
+</div>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>
+<span>• Espacio local de trabajo</span>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full space-y-6">
+<!-- 1. Tarjeta de Formulario: Nuevo Gasto (RF3, RF4) -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<!-- Header de la tarjeta -->
+<div class="px-5 py-3.5 bg-surface-container-low border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+</div>
+<div>
+<h2 class="font-title-sm text-title-sm text-on-surface font-semibold">Nuevo Gasto</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Registra un desembolso indicando quién pagó y la división de cuotas</p>
+</div>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#047857]"></span>
+<span>Estado: Listo para registrar</span>
+</div>
+</div>
+<!-- Cuerpo del Formulario -->
+<form class="p-5 space-y-5" onsubmit="event.preventDefault();">
+<!-- Fila 1: Concepto, Importe, Fecha -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+<div class="md:col-span-6 space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface font-medium" for="expense-concept">Concepto del desembolso</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[18px]" data-icon="description">description</span>
+<input class="w-full h-[34px] pl-8 pr-3 text-body-md font-body-md border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-150" id="expense-concept" placeholder="Ej. Combustible, Mercado, Hospedaje..." type="text" value="Cena Restaurante Mar Azul"/>
+</div>
+</div>
+<div class="md:col-span-3 space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface font-medium" for="expense-amount">Importe ($ ARS)</label>
+<div class="relative">
+<span class="absolute left-2.5 top-1/2 -translate-y-1/2 font-label-md text-label-md font-bold text-outline">$</span>
+<input class="w-full h-[34px] pl-7 pr-3 text-body-md font-body-md font-mono border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-150" id="expense-amount" step="0.01" type="number" value="120.00"/>
+</div>
+</div>
+<div class="md:col-span-3 space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface font-medium" for="expense-date">Fecha de pago</label>
+<div class="relative">
+<input class="w-full h-[34px] px-3 text-body-md font-body-md border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-150" id="expense-date" type="date" value="2026-10-06"/>
+</div>
+</div>
+</div>
+<div class="h-px bg-outline-variant/60"></div>
+<!-- Fila 2: ¿Quién lo pagó? y ¿Entre quiénes se divide? -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+<!-- Quién pagó -->
+<div class="md:col-span-4 space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface font-medium" for="expense-payer">
+              ¿Quién lo pagó?
+            </label>
+<div class="relative">
+<select class="w-full h-[34px] pl-3 pr-8 text-body-md font-body-md border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-150 cursor-pointer" id="expense-payer">
+<option selected="" value="carlos">Carlos Gómez</option>
+<option value="sofia">Sofía Martínez</option>
+<option value="mateo">Mateo Silva</option>
+<option value="valentina">Valentina Ríos</option>
+</select>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="account_balance">account_balance</span>
+              Abonado en efectivo / débito personal
+            </p>
+</div>
+<!-- División entre participantes -->
+<div class="md:col-span-8 space-y-2">
+<div class="flex items-center justify-between">
+<label class="block font-label-md text-label-md text-on-surface font-medium">
+                ¿Entre quiénes se divide?
+              </label>
+<div class="flex items-center gap-2">
+<button class="text-primary hover:underline font-label-sm text-label-sm" type="button">Seleccionar todos</button>
+<span class="text-outline-variant text-[11px]">•</span>
+<button class="text-on-surface-variant hover:underline font-label-sm text-label-sm" type="button">Limpiar selección</button>
+</div>
+</div>
+<!-- Checkbox Pills / Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+<label class="flex items-center gap-2 p-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors duration-150 select-none">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface truncate">Carlos G.</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors duration-150 select-none">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface truncate">Sofía M.</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors duration-150 select-none">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface truncate">Mateo S.</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors duration-150 select-none">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface truncate">Valentina R.</span>
+</label>
+</div>
+<!-- Resumen de Cuota Calculada -->
+<div class="mt-2 flex items-center justify-between p-2.5 rounded-lg bg-surface-container border border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="calculate">calculate</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">
+                  Cuota igual: <span class="font-mono text-primary">$30.00</span> por persona (4 seleccionados)
+                </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">100% cubierto • $0.00 remanente</span>
+</div>
+</div>
+</div>
+<!-- Fila de Acciones del Formulario -->
+<div class="flex items-center justify-end gap-3 pt-2">
+<button class="px-4 py-1.5 text-label-md font-label-md text-on-surface-variant hover:text-on-surface bg-transparent hover:bg-surface-container rounded-lg border border-outline-variant transition-colors duration-150" type="button">
+            Limpiar campos
+          </button>
+<button class="px-5 py-1.5 text-label-md font-label-md text-on-primary bg-primary hover:bg-[#2b1ea8] active:scale-[0.98] rounded-lg shadow-sm font-semibold flex items-center gap-1.5 transition-all duration-150" type="submit">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+            + Guardar Gasto
+          </button>
+</div>
+</form>
+</section>
+<!-- 2. Tarjeta / Tabla: Gastos Registrados (RF5, RF6) -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<!-- Cabecera de la sección -->
+<div class="px-5 py-3.5 bg-surface-container-low border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="receipt">receipt</span>
+</div>
+<div>
+<h2 class="font-title-sm text-title-sm text-on-surface font-semibold">Gastos Registrados</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Listado cronológico de desembolsos del grupo para auditoría y balances</p>
+</div>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface bg-surface-container px-3 py-1 rounded-full border border-outline-variant font-mono">
+          3 gastos cargados • Total acumulado: <strong class="text-primary">$240.00</strong>
+</div>
+</div>
+<!-- Tabla de Datos -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-sm text-label-sm">
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider w-28" scope="col">FECHA</th>
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider" scope="col">CONCEPTO</th>
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider text-right w-32" scope="col">MONTO</th>
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider w-44" scope="col">PAGADO POR</th>
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider" scope="col">DIVISIÓN</th>
+<th class="py-2.5 px-4 font-semibold uppercase tracking-wider text-center w-24" scope="col">ACCIONES</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md text-on-surface">
+<!-- Fila 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors duration-150">
+<td class="py-3 px-4 font-mono text-label-md text-on-surface-variant whitespace-nowrap">
+                06/10/2026
+              </td>
+<td class="py-3 px-4 font-semibold">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-surface-container flex items-center justify-center text-primary text-[14px]">
+<span class="material-symbols-outlined text-[15px]" data-icon="restaurant">restaurant</span>
+</span>
+<span>Cena Restaurante</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-currency-table text-currency-table text-on-surface text-right whitespace-nowrap">
+                $120.00
+              </td>
+<td class="py-3 px-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="person">person</span>
+                  Carlos Gómez
+                </span>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface text-label-sm font-mono border border-outline-variant">
+                  4 partes ($30.00 c/u)
+                </span>
+</td>
+<td class="py-3 px-4 text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 text-label-sm font-label-sm text-tertiary hover:bg-[#FEF2F2] border border-transparent hover:border-[#FECACA] rounded-lg transition-colors duration-150" title="Eliminar este gasto" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="delete">delete</span>
+<span>Eliminar</span>
+</button>
+</td>
+</tr>
+<!-- Fila 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors duration-150">
+<td class="py-3 px-4 font-mono text-label-md text-on-surface-variant whitespace-nowrap">
+                05/10/2026
+              </td>
+<td class="py-3 px-4 font-semibold">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-surface-container flex items-center justify-center text-primary text-[14px]">
+<span class="material-symbols-outlined text-[15px]" data-icon="shopping_cart">shopping_cart</span>
+</span>
+<span>Supermercado Provisión</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-currency-table text-currency-table text-on-surface text-right whitespace-nowrap">
+                $80.00
+              </td>
+<td class="py-3 px-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="person">person</span>
+                  Sofía Martínez
+                </span>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface text-label-sm font-mono border border-outline-variant">
+                  4 partes ($20.00 c/u)
+                </span>
+</td>
+<td class="py-3 px-4 text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 text-label-sm font-label-sm text-tertiary hover:bg-[#FEF2F2] border border-transparent hover:border-[#FECACA] rounded-lg transition-colors duration-150" title="Eliminar este gasto" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="delete">delete</span>
+<span>Eliminar</span>
+</button>
+</td>
+</tr>
+<!-- Fila 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors duration-150">
+<td class="py-3 px-4 font-mono text-label-md text-on-surface-variant whitespace-nowrap">
+                04/10/2026
+              </td>
+<td class="py-3 px-4 font-semibold">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-surface-container flex items-center justify-center text-primary text-[14px]">
+<span class="material-symbols-outlined text-[15px]" data-icon="local_gas_station">local_gas_station</span>
+</span>
+<span>Combustible y Peaje</span>
+</div>
+</td>
+<td class="py-3 px-4 font-mono font-currency-table text-currency-table text-on-surface text-right whitespace-nowrap">
+                $40.00
+              </td>
+<td class="py-3 px-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="person">person</span>
+                  Valentina Ríos
+                </span>
+</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface text-label-sm font-mono border border-outline-variant">
+                  4 partes ($10.00 c/u)
+                </span>
+</td>
+<td class="py-3 px-4 text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 px-2.5 py-1 text-label-sm font-label-sm text-tertiary hover:bg-[#FEF2F2] border border-transparent hover:border-[#FECACA] rounded-lg transition-colors duration-150" title="Eliminar este gasto" type="button">
+<span class="material-symbols-outlined text-[15px]" data-icon="delete">delete</span>
+<span>Eliminar</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 3. Barra de Navegación de Flujo -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+<div class="flex items-center gap-2 text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+<span>
+<strong>Total registrado:</strong> 3 gastos (<span class="font-mono">$240.00</span>) • Todos con división equitativa
+        </span>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+<a class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface rounded-lg hover:bg-surface-container transition-colors duration-150 flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_back">arrow_back</span>
+<span>Volver a Participantes</span>
+</a>
+<a class="px-5 py-2 font-label-md text-label-md font-semibold text-on-primary bg-primary hover:bg-[#2b1ea8] active:scale-[0.98] rounded-lg shadow-sm flex items-center gap-1.5 transition-all duration-150" href="#">
+<span>Continuar a Saldos y Deudas</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</div>
+</main>
+<!-- Barra de Estado Inferior de Aplicación Desktop -->
+<footer class="bg-surface-container-low border-t border-outline-variant select-none shrink-0 px-4 h-7 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant font-mono">
+<div class="flex items-center gap-3 truncate">
+<span class="flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[14px] text-outline" data-icon="draft">draft</span>
+        Archivo: viaje_playa_2025.json
+      </span>
+<span>•</span>
+<span>Moneda: ARS ($)</span>
+<span>•</span>
+<span class="text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        Listo para calcular saldos
+      </span>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span>UTF-8</span>
+<span>•</span>
+<span>GruPay Desktop Core</span>
+</div>
+</footer>
+</body></html>
