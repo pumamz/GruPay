@@ -1,0 +1,67 @@
+{
+  "nombre": "Viaje a la Playa",
+  "participantes": [
+    {
+      "nombre": "Carlos Gómez",
+      "rol": "Organizador"
+    },
+    {
+      "nombre": "Sofía Martínez",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Mateo Silva",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Valentina Ríos",
+      "rol": "Miembro"
+    }
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "Cena Restaurante",
+      "importe": 120.0,
+      "fecha": "2026-10-06",
+      "pagador": "Carlos Gómez",
+      "divididos": [
+        "Carlos Gómez",
+        "Sofía Martínez",
+        "Mateo Silva",
+        "Valentina Ríos"
+      ],
+      "cuota_individual": 30.0
+    },
+    {
+      "id": 2,
+      "concepto": "Supermercado",
+      "importe": 80.0,
+      "fecha": "2026-10-05",
+      "pagador": "Sofía Martínez",
+      "divididos": [
+        "Carlos Gómez",
+        "Sofía Martínez",
+        "Mateo Silva",
+        "Valentina Ríos"
+      ],
+      "cuota_individual": 20.0
+    },
+    {
+      "id": 3,
+      "concepto": "Combustible",
+      "importe": 40.0,
+      "fecha": "2026-10-04",
+      "pagador": "Valentina Ríos",
+      "divididos": [
+        "Carlos Gómez",
+        "Sofía Martínez",
+        "Mateo Silva",
+        "Valentina Ríos"
+      ],
+      "cuota_individual": 10.0
+    }
+  ],
+  "contador_gasto_id": 4,
+  "version": "2.0.0"
+}

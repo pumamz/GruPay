@@ -1,0 +1,35 @@
+{
+  "nombre": "Viaje Bariloche 2026",
+  "participantes": [
+    {
+      "nombre": "Carlos Gómez",
+      "rol": "Organizador"
+    },
+    {
+      "nombre": "Sofía Martínez",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Mateo Silva",
+      "rol": "Miembro"
+    }
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "Cena de Bienvenida",
+      "importe": 120.0,
+      "fecha": "06/10/2026",
+      "pagador": "Carlos Gómez",
+      "divididos": [
+        "Carlos Gómez",
+        "Sofía Martínez",
+        "Mateo Silva"
+      ],
+      "cuota_individual": 40.0,
+      "texto_desglose": "Cena de Bienvenida: $120.00. Pagó Carlos Gómez. Dividido entre 3 personas (Carlos Gómez, Sofía Martínez, Mateo Silva) a $40.00 c/u."
+    }
+  ],
+  "contador_gasto_id": 2,
+  "version": "3.0.0"
+}
