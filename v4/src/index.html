@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GruPay V4 - Gestor de Gastos Compartidos (RNF Engine)</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --neutral: #64748b;
+      --neutral-bg: #f8fafc;
+      --bg-page: #f1f5f9;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-page); color: var(--text-main); line-height: 1.5; padding: 16px; }
+    .header { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .header h1 { font-size: 20px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    button { cursor: pointer; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s ease; }
+    button:disabled { opacity: 0.45; cursor: not-allowed !important; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:not(:disabled):hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-secondary { background: #e2e8f0; color: #1e293b; border-color: #cbd5e1; }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: #fecaca; }
+    
+    .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 2px solid var(--border); }
+    .tab-btn { background: transparent; border: none; border-bottom: 2px solid transparent; padding: 10px 18px; font-size: 14px; color: var(--text-muted); border-radius: 6px 6px 0 0; margin-bottom: -2px; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; background: #fff; }
+
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    input, select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; }
+    input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); }
+    
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 14px; }
+    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    th { background: #f8fafc; text-align: left; padding: 9px 12px; border-bottom: 2px solid var(--border); color: #475569; font-weight: 600; }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: #f8fafc; }
+
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 700; }
+    .badge-positivo { background: var(--success-bg); color: #047857; border: 1px solid #a7f3d0; }
+    .badge-negativo { background: var(--danger-bg); color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-cero { background: var(--neutral-bg); color: #475569; border: 1px solid #e2e8f0; }
+
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .alert-banner { padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .alert-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .alert-error { background: var(--danger-bg); color: #991b1b; border: 1px solid #fecaca; }
+  </style>
+</head>
+<body>
+
+  <!-- Cabecera y RNF4 (Persistencia) -->
+  <header class="header">
+    <div>
+      <h1>⚡ GruPay V4 <span style="font-size: 12px; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 12px;">RNF Engine</span></h1>
+      <span style="font-size: 12px; color: var(--text-muted);" id="lbl-grupo-actual">Grupo: Viaje 2026</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-success" onclick="exportarJSON()">⬇️ Exportar Archivo (RNF4)</button>
+      <label class="btn-secondary" style="cursor: pointer; display: inline-flex; align-items: center;">
+        ⬆️ Importar Seguro (RNF4)
+        <input type="file" id="input-archivo" accept=".json" style="display: none;" onchange="importarJSON(event)">
+      </label>
+      <button class="btn-secondary" onclick="ejecutarBenchmark1000()">🚀 Benchmark 1000 Gastos (RNF3)</button>
+    </div>
+  </header>
+
+  <!-- Pestañas -->
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="cambiarPestana('tab-participantes', this)">1. Participantes y Grupo</button>
+    <button class="tab-btn" onclick="cambiarPestana('tab-gastos', this)">2. Registro de Gastos (RNF1 / RNF2)</button>
+    <button class="tab-btn" onclick="cambiarPestana('tab-saldos', this)">3. Saldos y Semántica (RNF5)</button>
+  </nav>
+
+  <!-- TAB 1: PARTICIPANTES -->
+  <section id="tab-participantes" class="tab-content">
+    <div class="card">
+      <div class="card-title">Configuración del Grupo</div>
+      <div style="display: flex; gap: 10px; max-width: 500px;">
+        <input type="text" id="input-nombre-grupo" value="Viaje de Graduación 2026" oninput="actualizarNombreGrupo(this.value)">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gestión de Participantes</div>
+      <div style="display: flex; gap: 10px; margin-bottom: 14px; max-width: 600px;">
+        <input type="text" id="nuevo-part-nombre" placeholder="Nombre completo...">
+        <select id="nuevo-part-rol">
+          <option value="Miembro">Miembro</option>
+          <option value="Organizador">Organizador (Admin Único)</option>
+        </select>
+        <button class="btn-primary" onclick="agregarParticipante()">+ Agregar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th class="text-right">Total Aportado (RNF1)</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-participantes-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB 2: GASTOS (RNF1 Y RNF2) -->
+  <section id="tab-gastos" class="tab-content" style="display: none;">
+    <div class="card">
+      <div class="card-title">
+        <span>Nuevo Gasto</span>
+        <span id="badge-validacion" style="font-size: 12px; color: var(--danger);">⚠️ Formulario Incompleto (RNF2)</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Concepto:*</label>
+          <input type="text" id="gasto-concepto" placeholder="Ej. Cena, Supermercado..." oninput="evaluarFormularioGasto()">
+        </div>
+
+        <div class="form-group">
+          <label>Importe ($):* (RNF1: Sin letras ni negativos)</label>
+          <!-- RNF1: Validación de teclado y autoformato onblur -->
+          <input type="text" id="gasto-importe" placeholder="0.00" 
+                 onkeydown="validarTecleoMonto(event)" 
+                 oninput="evaluarFormularioGasto()" 
+                 onblur="autoformatearMontoInput(this)">
+        </div>
+
+        <div class="form-group">
+          <label>Fecha:* (DD/MM/AAAA)</label>
+          <input type="text" id="gasto-fecha" placeholder="DD/MM/AAAA" oninput="evaluarFormularioGasto()">
+        </div>
+
+        <div class="form-group">
+          <label>¿Quién lo pagó?:*</label>
+          <select id="gasto-pagador" onchange="evaluarFormularioGasto()"></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Dividir equitativamente entre:*</label>
+        <div class="checkbox-group" id="contenedor-checkboxes"></div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="lbl-cuota-estimada" style="font-size: 13px; font-weight: 700; color: var(--primary);">Fórmula: $ 0.00</span>
+        <!-- RNF2: Botón disabled por defecto -->
+        <button id="btn-guardar-gasto" class="btn-primary" disabled onclick="guardarGasto()">🔒 Guardar Gasto</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Historial de Gastos Registrados</div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Concepto</th>
+            <th class="text-right">Importe (RNF1)</th>
+            <th>Pagador</th>
+            <th>Dividido Entre</th>
+            <th class="text-right">Cuota c/u</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-gastos-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB 3: SALDOS Y SEMÁNTICA VISUAL (RNF5 Y RNF3) -->
+  <section id="tab-saldos" class="tab-content" style="display: none;">
+    <div class="card">
+      <div class="card-title">Liquidación Financiera y Semántica Visual (RNF5)</div>
+      <div class="alert-banner alert-info" id="banner-tiempo-calculo">
+        ⚡ Cómputo O(N) Single-Pass con Memoización activo.
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th class="text-right">Total Pagado (RNF1)</th>
+            <th class="text-right">Total Consumido (RNF1)</th>
+            <th class="text-right">Saldo Neto (RNF1)</th>
+            <th class="text-center">Situación y Semántica (RNF5)</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-saldos-body"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Propuesta de Transferencias Mínimas</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Deudor (Quién Debe Pagar)</th>
+            <th>Acreedor (Quién Debe Recibir)</th>
+            <th class="text-right">Monto a Transferir (RNF1)</th>
+            <th class="text-center">Instrucción</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-trans-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    // ESTADO DEL SISTEMA (RNF3 Memoizado)
+    const estado = {
+      nombre: "Viaje de Graduación 2026",
+      participantes: [
+        { nombre: "Carlos Gómez", rol: "Organizador" },
+        { nombre: "Sofía Martínez", rol: "Miembro" },
+        { nombre: "Mateo Silva", rol: "Miembro" },
+        { nombre: "Valentina Ríos", rol: "Miembro" }
+      ],
+      gastos: [
+        { id: 1, concepto: "Cena Restaurante", importe: 120.0, fecha: "06/10/2026", pagador: "Carlos Gómez", divididos: ["Carlos Gómez", "Sofía Martínez", "Mateo Silva", "Valentina Ríos"] },
+        { id: 2, concepto: "Supermercado", importe: 80.0, fecha: "05/10/2026", pagador: "Sofía Martínez", divididos: ["Carlos Gómez", "Sofía Martínez", "Mateo Silva", "Valentina Ríos"] }
+      ],
+      contadorGastoId: 3,
+      datosModificados: true,
+      cacheSaldos: null,
+      cacheTransferencias: null
+    };
+
+    // RNF1: Formateador nativo del navegador
+    const formateadorMoneda = new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    function fmt(num) {
+      return formateadorMoneda.format(num);
+    }
+
+    // RNF1: Validador de teclado (bloquea letras, signos negativos)
+    function validarTecleoMonto(e) {
+      const permitidas = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
+      if (permitidas.includes(e.key)) return;
+      if (e.key === '.' && !e.target.value.includes('.')) return;
+      if (/^[0-9]$/.test(e.key)) return;
+      e.preventDefault(); // Bloquear cualquier otro carácter
+    }
+
+    // RNF1: Autoformato onBlur ('15' -> '15.00')
+    function autoformatearMontoInput(input) {
+      let val = input.value.trim().replace('$', '').replace(',', '');
+      if (val && !isNaN(val) && parseFloat(val) > 0) {
+        input.value = parseFloat(val).toFixed(2);
+      }
+      evaluarFormularioGasto();
+    }
+
+    // RNF2: Evaluación constante y reactiva del formulario
+    function evaluarFormularioGasto() {
+      const concepto = document.getElementById('gasto-concepto').value.trim();
+      const importeTxt = document.getElementById('gasto-importe').value.trim();
+      const fecha = document.getElementById('gasto-fecha').value.trim();
+      const pagador = document.getElementById('gasto-pagador').value;
+      const checkboxes = document.querySelectorAll('.check-div:checked');
+      const btn = document.getElementById('btn-guardar-gasto');
+      const badge = document.getElementById('badge-validacion');
+      const lblCuota = document.getElementById('lbl-cuota-estimada');
+
+      const importeNum = parseFloat(importeTxt);
+      const fechaValida = /^\d{2}\/\d{2}\/\d{4}$/.test(fecha);
+      const hayParticipantes = checkboxes.length > 0;
+
+      const valido = concepto !== "" && !isNaN(importeNum) && importeNum > 0 && fechaValida && pagador !== "" && hayParticipantes;
+
+      if (valido) {
+        btn.disabled = false;
+        btn.innerText = "✓ Guardar Gasto";
+        badge.innerText = "✓ Formulario Completo y Válido";
+        badge.style.color = "var(--success)";
+        const cuota = importeNum / checkboxes.length;
+        lblCuota.innerText = `Fórmula: ${fmt(importeNum)} / ${checkboxes.length} pers. = ${fmt(cuota)} c/u`;
+      } else {
+        btn.disabled = true;
+        btn.innerText = "🔒 Guardar Gasto (Bloqueado)";
+        badge.innerText = "⚠️ Formulario Incompleto (RNF2)";
+        badge.style.color = "var(--danger)";
+        lblCuota.innerText = "Fórmula: Incompleta";
+      }
+    }
+
+    // RNF3: Cálculo O(N) con Single-Pass y Memoización
+    function calcularSaldos() {
+      if (!estado.datosModificados && estado.cacheSaldos) {
+        return estado.cacheSaldos;
+      }
+
+      const t0 = performance.now();
+      const saldos = {};
+      estado.participantes.forEach(p => saldos[p.nombre] = { pagado: 0.0, consumido: 0.0, saldo: 0.0 });
+
+      // RECORRIDO ÚNICO O(N)
+      for (let i = 0; i < estado.gastos.length; i++) {
+        const g = estado.gastos[i];
+        if (saldos[g.pagador]) saldos[g.pagador].pagado += g.importe;
+        const cuota = g.importe / g.divididos.length;
+        for (let j = 0; j < g.divididos.length; j++) {
+          const part = g.divididos[j];
+          if (saldos[part]) saldos[part].consumido += cuota;
+        }
+      }
+
+      // Redondeo y semántica
+      Object.keys(saldos).forEach(nom => {
+        const p = saldos[nom];
+        p.pagado = Math.round(p.pagado * 100) / 100;
+        p.consumido = Math.round(p.consumido * 100) / 100;
+        p.saldo = Math.round((p.pagado - p.consumido) * 100) / 100;
+      });
+
+      const t1 = performance.now();
+      document.getElementById('banner-tiempo-calculo').innerText = 
+        `⚡ Cómputo O(N) completado en ${(t1 - t0).toFixed(2)} ms (${estado.gastos.length} gastos procesados sin congelamiento).`;
+
+      estado.cacheSaldos = saldos;
+      estado.datosModificados = false;
+      return saldos;
+    }
+
+    function calcularTransferencias(saldos) {
+      const deudores = [];
+      const acreedores = [];
+      Object.keys(saldos).forEach(nom => {
+        const s = saldos[nom].saldo;
+        if (s < -0.009) deudores.push([nom, Math.abs(s)]);
+        else if (s > 0.009) acreedores.push([nom, s]);
+      });
+
+      const trans = [];
+      let i = 0, j = 0;
+      while (i < deudores.length && j < acreedores.length) {
+        const monto = Math.round(Math.min(deudores[i][1], acreedores[j][1]) * 100) / 100;
+        if (monto > 0) {
+          trans.push({ de: deudores[i][0], a: acreedores[j][0], monto });
+        }
+        deudores[i][1] = Math.round((deudores[i][1] - monto) * 100) / 100;
+        acreedores[j][1] = Math.round((acreedores[j][1] - monto) * 100) / 100;
+        if (deudores[i][1] < 0.01) i++;
+        if (acreedores[j][1] < 0.01) j++;
+      }
+      return trans;
+    }
+
+    // RNF5: Render de Saldos Semánticos
+    function renderSaldos() {
+      const saldos = calcularSaldos();
+      const tbody = document.getElementById('tabla-saldos-body');
+      tbody.innerHTML = '';
+
+      Object.keys(saldos).forEach(nom => {
+        const d = saldos[nom];
+        let badgeHtml = '';
+        let montoVisual = '';
+
+        if (d.saldo > 0.009) {
+          badgeHtml = `<span class="badge badge-positivo">▲ (+) Recibe dinero</span>`;
+          montoVisual = `<span style="color: var(--success); font-weight: 700;">${fmt(d.saldo)}</span>`;
+        } else if (d.saldo < -0.009) {
+          badgeHtml = `<span class="badge badge-negativo">▼ (-) Debe dinero</span>`;
+          montoVisual = `<span style="color: var(--danger); font-weight: 700;">${fmt(Math.abs(d.saldo))}</span>`;
+        } else {
+          badgeHtml = `<span class="badge badge-cero">✓ Cuentas saldadas</span>`;
+          montoVisual = `<span style="color: var(--neutral); font-weight: 700;">${fmt(0)}</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${nom}</strong></td>
+          <td class="text-right">${fmt(d.pagado)}</td>
+          <td class="text-right">${fmt(d.consumido)}</td>
+          <td class="text-right">${montoVisual}</td>
+          <td class="text-center">${badgeHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Transferencias
+      const trans = calcularTransferencias(saldos);
+      const tbodyTrans = document.getElementById('tabla-trans-body');
+      tbodyTrans.innerHTML = '';
+      if (trans.length === 0) {
+        tbodyTrans.innerHTML = '<tr><td colspan="4" class="text-center" style="color: var(--success); font-weight: 700;">✓ Todas las cuentas están saldadas.</td></tr>';
+      } else {
+        trans.forEach(t => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${t.de}</td>
+            <td>${t.a}</td>
+            <td class="text-right" style="font-weight: 700;">${fmt(t.monto)}</td>
+            <td class="text-center"><span class="badge badge-negativo">${t.de} paga a ${t.a}</span></td>
+          `;
+          tbodyTrans.appendChild(tr);
+        });
+      }
+    }
+
+    // RNF4: Exportación Forzada
+    function exportarJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(estado, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const nombreSeguro = estado.nombre.replace(/[^a-zA-Z0-9_-]/g, "_") + ".json";
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", nombreSeguro);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // RNF4: Importación Protegida ante Corrupción
+    function importarJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (!parsed.participantes || !Array.isArray(parsed.participantes) || !parsed.gastos || !Array.isArray(parsed.gastos)) {
+            throw new Error("El archivo no tiene el formato o las listas requeridas de participantes y gastos.");
+          }
+          // Si pasa la verificación, hidratar
+          estado.nombre = parsed.nombre || "Grupo Importado";
+          estado.participantes = parsed.participantes;
+          estado.gastos = parsed.gastos;
+          estado.contadorGastoId = (parsed.contadorGastoId || parsed.gastos.length) + 1;
+          estado.datosModificados = true;
+
+          renderTodo();
+          alert("✓ Archivo verificado e importado exitosamente.");
+        } catch (err) {
+          // Abortar y mantener datos actuales
+          alert("⚠️ PROTECCIÓN DEL SISTEMA ACTIVADA:\nEl archivo está corrupto o no cumple el esquema requerido. Se mantiene la información actual en pantalla.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    // RNF3: Benchmark de 1000 gastos en vivo
+    function ejecutarBenchmark1000() {
+      const nombres = [];
+      for (let i = 1; i <= 100; i++) nombres.push(`Persona_${i.toString().padStart(3, '0')}`);
+      estado.participantes = nombres.map((n, idx) => ({ nombre: n, rol: idx === 0 ? "Organizador" : "Miembro" }));
+      estado.gastos = [];
+
+      for (let i = 1; i <= 1000; i++) {
+        const pag = nombres[Math.floor(Math.random() * nombres.length)];
+        const divs = [pag, nombres[Math.floor(Math.random() * nombres.length)], nombres[Math.floor(Math.random() * nombres.length)]];
+        estado.gastos.push({
+          id: i,
+          concepto: `Gasto Operativo #${i}`,
+          importe: Math.round((Math.random() * 200 + 10) * 100) / 100,
+          fecha: "07/10/2026",
+          pagador: pag,
+          divididos: Array.from(new Set(divs))
+        });
+      }
+      estado.datosModificados = true;
+      renderTodo();
+      cambiarPestana('tab-saldos', document.querySelectorAll('.tab-btn')[2]);
+    }
+
+    function renderParticipantes() {
+      const tbody = document.getElementById('tabla-participantes-body');
+      tbody.innerHTML = '';
+      const saldos = calcularSaldos();
+      estado.participantes.forEach((p, idx) => {
+        const pagado = saldos[p.nombre] ? saldos[p.nombre].pagado : 0;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td><strong>${p.nombre}</strong></td>
+          <td><span class="badge ${p.rol === 'Organizador' ? 'badge-positivo' : 'badge-cero'}">${p.rol}</span></td>
+          <td class="text-right">${fmt(pagado)}</td>
+          <td class="text-center">
+            <button class="btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="eliminarParticipante('${p.nombre}')">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Actualizar select de pagador y checkboxes
+      const selPag = document.getElementById('gasto-pagador');
+      selPag.innerHTML = '<option value="">-- Seleccionar --</option>';
+      const contChecks = document.getElementById('contenedor-checkboxes');
+      contChecks.innerHTML = '';
+
+      estado.participantes.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.nombre;
+        opt.innerText = p.nombre;
+        selPag.appendChild(opt);
+
+        const label = document.createElement('label');
+        label.className = 'checkbox-item';
+        label.innerHTML = `<input type="checkbox" class="check-div" value="${p.nombre}" checked onchange="evaluarFormularioGasto()"> ${p.nombre}`;
+        contChecks.appendChild(label);
+      });
+    }
+
+    function renderGastos() {
+      const tbody = document.getElementById('tabla-gastos-body');
+      tbody.innerHTML = '';
+      estado.gastos.forEach(g => {
+        const cuota = g.importe / g.divididos.length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>#${g.id}</td>
+          <td>${g.fecha}</td>
+          <td><strong>${g.concepto}</strong></td>
+          <td class="text-right">${fmt(g.importe)}</td>
+          <td>${g.pagador}</td>
+          <td>${g.divididos.length} pers (${g.divididos.join(', ')})</td>
+          <td class="text-right">${fmt(cuota)}</td>
+          <td class="text-center">
+            <button class="btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="eliminarGasto(${g.id})">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderTodo() {
+      document.getElementById('lbl-grupo-actual').innerText = `Grupo: ${estado.nombre}`;
+      document.getElementById('input-nombre-grupo').value = estado.nombre;
+      renderParticipantes();
+      renderGastos();
+      renderSaldos();
+      evaluarFormularioGasto();
+    }
+
+    function agregarParticipante() {
+      const nomInput = document.getElementById('nuevo-part-nombre');
+      const rolInput = document.getElementById('nuevo-part-rol');
+      const nom = nomInput.value.trim();
+      const rol = rolInput.value;
+      if (!nom) return alert("Ingresa un nombre válido.");
+      if (estado.participantes.some(p => p.nombre === nom)) return alert("El participante ya existe.");
+
+      if (rol === "Organizador") {
+        estado.participantes.forEach(p => p.rol = "Miembro");
+      }
+      estado.participantes.push({ nombre: nom, rol });
+      nomInput.value = '';
+      estado.datosModificados = true;
+      renderTodo();
+    }
+
+    function eliminarParticipante(nom) {
+      if (estado.gastos.some(g => g.pagador === nom || g.divididos.includes(nom))) {
+        return alert(`⚠️ BLOQUEO: No se puede eliminar a '${nom}' porque tiene gastos asociados.`);
+      }
+      estado.participantes = estado.participantes.filter(p => p.nombre !== nom);
+      estado.datosModificados = true;
+      renderTodo();
+    }
+
+    function guardarGasto() {
+      const concepto = document.getElementById('gasto-concepto').value.trim();
+      const importe = parseFloat(document.getElementById('gasto-importe').value);
+      const fecha = document.getElementById('gasto-fecha').value.trim();
+      const pagador = document.getElementById('gasto-pagador').value;
+      const divididos = Array.from(document.querySelectorAll('.check-div:checked')).map(c => c.value);
+
+      estado.gastos.push({
+        id: estado.contadorGastoId++,
+        concepto,
+        importe,
+        fecha,
+        pagador,
+        divididos
+      });
+      estado.datosModificados = true;
+      document.getElementById('gasto-concepto').value = '';
+      document.getElementById('gasto-importe').value = '';
+      renderTodo();
+      alert(`✓ Gasto '${concepto}' registrado.`);
+    }
+
+    function eliminarGasto(id) {
+      estado.gastos = estado.gastos.filter(g => g.id !== id);
+      estado.datosModificados = true;
+      renderTodo();
+    }
+
+    function actualizarNombreGrupo(val) {
+      estado.nombre = val.trim() || "Grupo";
+      document.getElementById('lbl-grupo-actual').innerText = `Grupo: ${estado.nombre}`;
+      estado.datosModificados = true;
+    }
+
+    function cambiarPestana(idTab, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(idTab).style.display = 'block';
+      btn.classList.add('active');
+      if (idTab === 'tab-saldos') renderSaldos();
+    }
+
+    // Inicializar al cargar
+    document.getElementById('gasto-fecha').value = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    renderTodo();
+  </script>
+</body>
+</html>

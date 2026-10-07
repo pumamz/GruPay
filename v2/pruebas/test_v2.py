@@ -12,8 +12,11 @@ Valida estrictamente los Criterios de Aceptación de la Fase 4 y Mejoras de V2:
 
 import os
 import shutil
+import sys
 import tempfile
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from core import (
     GestorMultiGrupos,

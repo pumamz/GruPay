@@ -1,0 +1,15 @@
+{
+  "nombre": "Archivo Dañado",
+  "participantes": [
+    { "nombre": "Carlos" }
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "Gasto Invalido",
+      "importe": -50.0,
+      "pagador": "FantasmaInexistente",
+      "divididos": []
+    }
+  ]
+}

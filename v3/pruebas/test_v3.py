@@ -13,8 +13,11 @@ Valida exhaustivamente las Fases 1 a 5 de la Versión 3:
 
 import os
 import shutil
+import sys
 import tempfile
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 from core import (
     GestorMultiGruposV3,

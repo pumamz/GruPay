@@ -1,0 +1,24 @@
+{
+  "nombre": "grupo 2",
+  "participantes": [
+    {
+      "nombre": "leiver",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "alexis",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "jara",
+      "rol": "Organizador"
+    },
+    {
+      "nombre": "daniel",
+      "rol": "Miembro"
+    }
+  ],
+  "gastos": [],
+  "contador_gasto_id": 1,
+  "version": "3.0.0"
+}

@@ -1,0 +1,34 @@
+{
+  "nombre": "Grupo 1",
+  "participantes": [
+    {
+      "nombre": "Daniel",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "Hola",
+      "rol": "Miembro"
+    },
+    {
+      "nombre": "hola 2",
+      "rol": "Organizador"
+    }
+  ],
+  "gastos": [
+    {
+      "id": 1,
+      "concepto": "tiendda",
+      "importe": 50.0,
+      "fecha": "07/10/2026",
+      "pagador": "Daniel",
+      "divididos": [
+        "Daniel",
+        "Hola"
+      ],
+      "cuota_individual": 25.0,
+      "texto_desglose": "tiendda: $50.00. Pagó Daniel. Dividido entre 2 personas (Daniel, Hola) a $25.00 c/u."
+    }
+  ],
+  "contador_gasto_id": 2,
+  "version": "3.0.0"
+}
